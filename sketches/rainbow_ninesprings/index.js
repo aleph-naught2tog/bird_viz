@@ -2,7 +2,7 @@ const ROBIN_INDEX = 14;
 
 // `const` is like `let`, only it means "this won't change"
 const BACKGROUND = "gray";
-const FILENAME = "ninesprings.tsv";
+const FILENAME = "./ninesprings.tsv";
 
 let allData;
 let select;

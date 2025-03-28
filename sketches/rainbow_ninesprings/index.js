@@ -24,9 +24,6 @@ function onDataLoad(data) {
 
   // then, once we have data, we draw our menu at the top
   makeMenu(data);
-
-  const currentRow = allData.getRow(ROBIN_INDEX);
-  renderBarChart(currentRow);
 }
 
 // Putting this code in `draw` means that every time `draw` is called
@@ -34,12 +31,12 @@ function onDataLoad(data) {
 //    specific bird's chart. It runs 60 times a second unless you change that
 function draw() {
   // If the data has been loaded and the select has been created
-  // if (allData && select) {
-  //   const rowIndex = select.selected();
-  //   const currentRow = allData.getRow(rowIndex);
+  if (allData && select) {
+    const rowIndex = select.selected();
+    const currentRow = allData.getRow(rowIndex);
 
-  //   renderBarChart(currentRow);
-  // }
+    renderBarChart(currentRow);
+  }
 }
 
 function makeMenu(data) {
@@ -112,7 +109,7 @@ function renderBarChart(birdData) {
     // Here, since we changed to HSB, we give the fill three
     //     values -- hue, saturation, and brightness which we set to 100%
     //     (this keeps things bright instead of being black)
-    fill(hue, saturation * 1.5, 100);
+    fill(hue, saturation * 1.5, 85);
 
     const barWidth = width / barCount;
 

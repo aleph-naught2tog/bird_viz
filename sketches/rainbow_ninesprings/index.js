@@ -1,6 +1,6 @@
+// `const` is like `let`, only it means "this won't change"
 const ROBIN_INDEX = 14;
 
-// `const` is like `let`, only it means "this won't change"
 const BACKGROUND = "gray";
 const FILENAME = "./ninesprings.tsv";
 
@@ -24,6 +24,9 @@ function onDataLoad(data) {
 
   // then, once we have data, we draw our menu at the top
   makeMenu(data);
+
+  const currentRow = allData.getRow(ROBIN_INDEX);
+  renderBarChart(currentRow);
 }
 
 // Putting this code in `draw` means that every time `draw` is called
@@ -31,12 +34,12 @@ function onDataLoad(data) {
 //    specific bird's chart. It runs 60 times a second unless you change that
 function draw() {
   // If the data has been loaded and the select has been created
-  if (allData && select) {
-    const rowIndex = select.selected();
-    const currentRow = allData.getRow(rowIndex);
+  // if (allData && select) {
+  //   const rowIndex = select.selected();
+  //   const currentRow = allData.getRow(rowIndex);
 
-    renderBarChart(currentRow);
-  }
+  //   renderBarChart(currentRow);
+  // }
 }
 
 function makeMenu(data) {
@@ -99,7 +102,8 @@ function renderBarChart(birdData) {
     //     "Hue" represents the actual color on a color wheel -- as you walk around
     //     the colorwheel like a circle, your angle changes, and that represents the color
     //     There's 360 degrees in a circle, so that's why we vary here
-    const hue = map(monthIndex, 0, 12, 0, 360);
+    // const hue = map(monthIndex, 0, 12, 0, 360);
+    const hue = calculateColor(monthIndex)
 
     // This changes the way p5 interprets colors from names or hex codes to
     //     a "Hue Saturation Brightness" color, which lets us use our values above!
@@ -155,4 +159,18 @@ function sortBirdsByName(firstRow, secondRow) {
 // This removes the stuff after the bird name that looks like `<em ...`
 function cleanBirdName(birdName) {
   return birdName.replaceAll(/<\/?[^>]+>/g, "");
+}
+
+function calculateColor(monthIndex) {
+  const scaled = map(monthIndex, 0, 12, 0, 1);
+  const degrees = Math.floor(scaled * 180);
+  const asRadians = radians(degrees);
+
+  // subtracting from 360 changes the direction we go through the wheel
+  // 180 to 360 pins us on a certain part
+
+  // TODO: it'd be really cool to use weather data here
+  const hue = 360 - map(sin(asRadians), 0, 1, 180, 360);
+
+  return hue;
 }

@@ -69,7 +69,7 @@ function renderChart(birdData) {
 
     const initialPoint = {
       x: (BAR_WIDTH * index),// * Math.cos(currentAngle),
-      y: -1 * INTERNAL_CIRCLE_RADIUS,//  * Math.sin(currentAngle),
+      y: -1 * (INTERNAL_CIRCLE_RADIUS + radius),//  * Math.sin(currentAngle),
       // x: radius * Math.cos(currentAngle),
       // y: radius * Math.sin(currentAngle)
     };

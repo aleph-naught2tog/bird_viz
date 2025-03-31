@@ -1,20 +1,24 @@
+// 1000px is wide enough for all the bars horizontally
+// we can reduce this later once we're rotating
+const CANVAS_SIZE = 1000;
 const BACKGROUND = 'gray';
 const FILENAME = '../../data/ninesprings.tsv';
 const ROBIN_INDEX = 246;
 const DATA_POINTS_COUNT = 48;
 const MAX_BAR_HEIGHT = 100;
 const BAR_WIDTH = 10;
-const center = { x: 250, y: 250 };
+const center = { x: CANVAS_SIZE / 2, y: CANVAS_SIZE / 2 };
 const X_CENTER = center.x;
 const Y_CENTER = center.y;
 const GAP = 2;
-const CIRCLE_RADIUS = 25;
+const INTERNAL_CIRCLE_RADIUS = 25;
+const EXTERNAL_CIRCLE_MAX_RADIUS = INTERNAL_CIRCLE_RADIUS + MAX_BAR_HEIGHT;
 const DEGREE_SHIFT = 7.5;
 
 let allData;
 
 function setup() {
-  createCanvas(500, 500);
+  createCanvas(CANVAS_SIZE, CANVAS_SIZE);
   background(BACKGROUND);
   loadTable(FILENAME, onDataLoad);
 }
@@ -48,31 +52,41 @@ function renderChart(birdData) {
 
       maybe pointy arcs is easier to start?
   */
-  circle(X_CENTER, Y_CENTER, CIRCLE_RADIUS * 2);
+  circle(X_CENTER, Y_CENTER, INTERNAL_CIRCLE_RADIUS * 2);
+
+  translate(width / 2, height / 2);
+
+  beginShape()
+  noFill()
 
   for (let index = 0; index < DATA_POINTS_COUNT; index += 1) {
+    rotate(7.5)
     const birdIndex = index + 1; // +1 because of the name column
     const rawAbundanceValue = birdData.get(birdIndex);
 
-    const height = map(rawAbundanceValue, 0, 1, 0, -1 * MAX_BAR_HEIGHT);
+    const radius = -1 * map(rawAbundanceValue, 0, 1, 25, 200);
+    const currentAngle = map(index, 0, DATA_POINTS_COUNT, 0, 360);
 
     const initialPoint = {
-      x: X_CENTER + (BAR_WIDTH * index),
-      y: Y_CENTER + CIRCLE_RADIUS* -1,
+      x: (BAR_WIDTH * index),// * Math.cos(currentAngle),
+      y: -1 * INTERNAL_CIRCLE_RADIUS,//  * Math.sin(currentAngle),
+      // x: radius * Math.cos(currentAngle),
+      // y: radius * Math.sin(currentAngle)
     };
 
-    const topLeftPoint = { x: initialPoint.x, y: initialPoint.y + height };
+    const topLeftPoint = { x: initialPoint.x, y: initialPoint.y + radius };
     const topRightPoint = { x: topLeftPoint.x + BAR_WIDTH, y: topLeftPoint.y };
     const bottomRightPoint = { x: topRightPoint.x, y: initialPoint.y };
 
-    console.debug({
-      initialPoint,
-      topLeftPoint,
-      topRightPoint,
-      bottomRightPoint,
-    });
+    // console.debug({
+    //   initialPoint,
+    //   topLeftPoint,
+    //   topRightPoint,
+    //   bottomRightPoint,
+    // });
 
-    fill('orange');
+    colorMode(HSB);
+    fill(map(index, 0, 48, 0, 360), 100, 85);
     quad(
       initialPoint.x,
       initialPoint.y,

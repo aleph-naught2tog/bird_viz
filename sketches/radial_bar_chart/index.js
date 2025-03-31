@@ -1,17 +1,16 @@
 // 1000px is wide enough for all the bars horizontally
 // we can reduce this later once we're rotating
-const CANVAS_SIZE = 500;
+const CANVAS_SIZE = 700;
 const BACKGROUND = 'gray';
 const FILENAME = '../../data/ninesprings.tsv';
 const ROBIN_INDEX = 246;
 const DATA_POINTS_COUNT = 48;
 const MAX_BAR_HEIGHT = 100;
-const BAR_WIDTH = 10;
 const center = { x: CANVAS_SIZE / 2, y: CANVAS_SIZE / 2 };
 const X_CENTER = center.x;
 const Y_CENTER = center.y;
 const GAP = 2;
-const INTERNAL_CIRCLE_RADIUS = 25;
+const INTERNAL_CIRCLE_RADIUS = 70;
 const EXTERNAL_CIRCLE_MAX_RADIUS = INTERNAL_CIRCLE_RADIUS + MAX_BAR_HEIGHT;
 const DEGREE_SHIFT = 7.5;
 
@@ -34,7 +33,7 @@ function onDataLoad(data) {
 
 function renderChart(birdData) {
   // draw a circle
-
+  const BAR_WIDTH = (2 * PI * INTERNAL_CIRCLE_RADIUS) / DATA_POINTS_COUNT;
   /*
     for every point
       draw a quadrilateral

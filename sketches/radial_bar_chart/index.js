@@ -71,17 +71,23 @@ function renderChart(birdData) {
 
     const radius = -1 * map(rawAbundanceValue, 0, 1, 25, 200);
 
-    const endBarWidth = (2 * PI * radius) / DATA_POINTS_COUNT;
-
     const initialPoint = {
       x: 0,
       y: 0 + -1 * INTERNAL_CIRCLE_RADIUS,
     };
 
     const topLeftPoint = { x: initialPoint.x, y: initialPoint.y + radius };
-    const topRightPoint = { x: topLeftPoint.x + endBarWidth, y: topLeftPoint.y };
+    const topRightPoint = {
+      x: topLeftPoint.x + BAR_WIDTH,
+      y: topLeftPoint.y,
+    };
     // using initialPoint.x here lets us change up the width on top of things
-    const bottomRightPoint = { x: initialPoint.x + BAR_WIDTH, y: initialPoint.y };
+    const bottomRightPoint = {
+      x: initialPoint.x + BAR_WIDTH,
+      y: initialPoint.y,
+    };
+
+    console.debug(initialPoint, topLeftPoint, topRightPoint, bottomRightPoint);
 
     fill(map(index, 0, 48, 0, 360), 100, 85);
 

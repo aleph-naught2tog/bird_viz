@@ -1,6 +1,6 @@
 // 1000px is wide enough for all the bars horizontally
 // we can reduce this later once we're rotating
-const CANVAS_SIZE = 1000;
+const CANVAS_SIZE = 500;
 const BACKGROUND = 'gray';
 const FILENAME = '../../data/ninesprings.tsv';
 const ROBIN_INDEX = 246;
@@ -55,55 +55,45 @@ function renderChart(birdData) {
   circle(X_CENTER, Y_CENTER, INTERNAL_CIRCLE_RADIUS * 2);
 
   beginShape();
-  noFill();
 
   colorMode(HSB);
-  strokeWeight((2 * PI * INTERNAL_CIRCLE_RADIUS) / DATA_POINTS_COUNT);
 
   angleMode(DEGREES);
 
   for (let index = 0; index < DATA_POINTS_COUNT; index += 1) {
-    push();
-    translate(width / 2, height / 2);
-    const deg = (360 / DATA_POINTS_COUNT) * index;
-    rotate(deg);
     const birdIndex = index + 1; // +1 because of the name column
     const rawAbundanceValue = birdData.get(birdIndex);
 
+    push();
+    translate(width / 2, height / 2);
+
+    const deg = (360 / DATA_POINTS_COUNT) * index;
+    rotate(deg);
+
+
     const radius = -1 * map(rawAbundanceValue, 0, 1, 25, 200);
-    // const currentAngle = map(index, 0, DATA_POINTS_COUNT, 0, 360);
 
     const initialPoint = {
-      x: 0, // radius * Math.cos(currentAngle),
-      y: 0 + -1 * INTERNAL_CIRCLE_RADIUS, //radius * Math.sin(currentAngle),//  * Math.sin(currentAngle),
-      // x: radius * Math.cos(currentAngle),
-      // y: radius * Math.sin(currentAngle)
+      x: 0,
+      y: 0 + -1 * INTERNAL_CIRCLE_RADIUS,
     };
 
     const topLeftPoint = { x: initialPoint.x, y: initialPoint.y + radius };
-    // const topRightPoint = { x: topLeftPoint.x + BAR_WIDTH, y: topLeftPoint.y };
-    // const bottomRightPoint = { x: topRightPoint.x, y: initialPoint.y };
+    const topRightPoint = { x: topLeftPoint.x + BAR_WIDTH, y: topLeftPoint.y };
+    const bottomRightPoint = { x: topRightPoint.x, y: initialPoint.y };
 
-    // console.debug({
-    //   initialPoint,
-    //   topLeftPoint,
-    //   topRightPoint,
-    //   bottomRightPoint,
-    // });
+    fill(map(index, 0, 48, 0, 360), 100, 85);
 
-    stroke(map(index, 0, 48, 0, 360), 100, 85);
-
-    line(initialPoint.x, initialPoint.y, topLeftPoint.x, topLeftPoint.y);
-    // quad(
-    //   initialPoint.x,
-    //   initialPoint.y,
-    //   topLeftPoint.x,
-    //   topLeftPoint.y,
-    //   topRightPoint.x,
-    //   topRightPoint.y,
-    //   bottomRightPoint.x,
-    //   bottomRightPoint.y
-    // );
+    quad(
+      initialPoint.x,
+      initialPoint.y,
+      topLeftPoint.x,
+      topLeftPoint.y,
+      topRightPoint.x,
+      topRightPoint.y,
+      bottomRightPoint.x,
+      bottomRightPoint.y
+    );
 
     pop();
   }

@@ -32,25 +32,9 @@ function onDataLoad(data) {
 }
 
 function renderChart(birdData) {
-  // draw a circle
-  const BAR_WIDTH = (2 * PI * INTERNAL_CIRCLE_RADIUS) / DATA_POINTS_COUNT;
-  /*
-    for every point
-      draw a quadrilateral
-      whose "base" points are on the circle
-      and whose end points are the value scaled to some height
-      (long-term: arc, line, arc, line)
+  const barWidth = (2 * PI * INTERNAL_CIRCLE_RADIUS) / DATA_POINTS_COUNT;
 
-      will need trig eventually
-      eg, very first point will start at 250, 250
-      height: map(abundance, 0, 1, 0, MAX_BAR_HEIGHT)
-      point 1: 250, 250
-      point 2: 250, height
-      point 3: height, 250 + barwidth
-      point 4:: 250 + bar width, 250
-
-      maybe pointy arcs is easier to start?
-  */
+  noFill();
   circle(X_CENTER, Y_CENTER, INTERNAL_CIRCLE_RADIUS * 2);
 
   beginShape();
@@ -64,40 +48,56 @@ function renderChart(birdData) {
     const rawAbundanceValue = birdData.get(birdIndex);
 
     push();
+
+    // This moves us to the center of the canvas
     translate(width / 2, height / 2);
 
-    const deg = (360 / DATA_POINTS_COUNT) * index;
-    rotate(deg);
+    // rotate by however far we are
+    const degreesToRotate = (360 / DATA_POINTS_COUNT) * index;
+    rotate(degreesToRotate);
 
-    const radius = -1 * map(rawAbundanceValue, 0, 1, 25, 200);
+    const radius = map(rawAbundanceValue, 0, 1, INTERNAL_CIRCLE_RADIUS, 200);
+    console.debug(radius);
+
+    const distantRadius = INTERNAL_CIRCLE_RADIUS + radius;
+    const distantCircumference = 2 * PI * distantRadius;
+    const distantBarWidth = distantCircumference / DATA_POINTS_COUNT;
+    const diff = (distantBarWidth - barWidth) / 2;
 
     const initialPoint = {
       x: 0,
       y: 0 + -1 * INTERNAL_CIRCLE_RADIUS,
     };
 
-    const topLeftPoint = { x: initialPoint.x, y: initialPoint.y + radius };
+    const topLeftPoint = {
+      x: initialPoint.x - diff,
+      y: initialPoint.y + radius * -1,
+    };
+
     const topRightPoint = {
-      x: topLeftPoint.x + BAR_WIDTH,
+      x: topLeftPoint.x + distantBarWidth,
       y: topLeftPoint.y,
     };
+
     // using initialPoint.x here lets us change up the width on top of things
     const bottomRightPoint = {
-      x: initialPoint.x + BAR_WIDTH,
+      x: initialPoint.x + barWidth,
       y: initialPoint.y,
     };
 
-    console.debug(initialPoint, topLeftPoint, topRightPoint, bottomRightPoint);
-
-    fill(map(index, 0, 48, 0, 360), 100, 85);
+    const hue = map(index, 0, 48, 0, 360);
+    fill(hue, 100, 85);
 
     quad(
       initialPoint.x,
       initialPoint.y,
+
       topLeftPoint.x,
       topLeftPoint.y,
+
       topRightPoint.x,
       topRightPoint.y,
+
       bottomRightPoint.x,
       bottomRightPoint.y
     );

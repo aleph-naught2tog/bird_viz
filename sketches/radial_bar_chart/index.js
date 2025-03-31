@@ -9,6 +9,7 @@ const X_CENTER = center.x;
 const Y_CENTER = center.y;
 const GAP = 2;
 const CIRCLE_RADIUS = 25;
+const DEGREE_SHIFT = 7.5;
 
 let allData;
 
@@ -47,6 +48,7 @@ function renderChart(birdData) {
 
       maybe pointy arcs is easier to start?
   */
+  circle(X_CENTER, Y_CENTER, CIRCLE_RADIUS * 2);
 
   for (let index = 0; index < DATA_POINTS_COUNT; index += 1) {
     const birdIndex = index + 1; // +1 because of the name column
@@ -56,8 +58,9 @@ function renderChart(birdData) {
 
     const initialPoint = {
       x: X_CENTER + (BAR_WIDTH * index),
-      y: Y_CENTER,
+      y: Y_CENTER + CIRCLE_RADIUS* -1,
     };
+
     const topLeftPoint = { x: initialPoint.x, y: initialPoint.y + height };
     const topRightPoint = { x: topLeftPoint.x + BAR_WIDTH, y: topLeftPoint.y };
     const bottomRightPoint = { x: topRightPoint.x, y: initialPoint.y };

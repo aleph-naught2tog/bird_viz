@@ -1,24 +1,20 @@
-// 1000px is wide enough for all the bars horizontally
-// we can reduce this later once we're rotating
-const CANVAS_SIZE = 700;
-const BACKGROUND = 'gray';
+const ROBIN_BLACK = '#0a060d';
+const ROBIN_GRAY = '#aaa7ad';
+const ROBIN_RED = '#f08a35';
+
 const FILENAME = '../../data/ninesprings.tsv';
 const ROBIN_INDEX = 246;
 const DATA_POINTS_COUNT = 48;
-const MAX_BAR_HEIGHT = 100;
-const center = { x: CANVAS_SIZE / 2, y: CANVAS_SIZE / 2 };
-const X_CENTER = center.x;
-const Y_CENTER = center.y;
-const GAP = 2;
-const INTERNAL_CIRCLE_RADIUS = 70;
-const EXTERNAL_CIRCLE_MAX_RADIUS = INTERNAL_CIRCLE_RADIUS + MAX_BAR_HEIGHT;
-const DEGREE_SHIFT = 7.5;
 
-let allData;
+const CANVAS_SIZE = 700;
+const CENTER = { x: CANVAS_SIZE / 2, y: CANVAS_SIZE / 2 };
+const INTERNAL_CIRCLE_RADIUS = 70;
+const MAX_EXTERNAL_CIRCLE_RADIUS = 300;
+const GAP = 4;
 
 function setup() {
   createCanvas(CANVAS_SIZE, CANVAS_SIZE);
-  background(BACKGROUND);
+  background(ROBIN_GRAY);
   loadTable(FILENAME, onDataLoad);
 }
 
@@ -32,14 +28,14 @@ function onDataLoad(data) {
 }
 
 function renderChart(birdData) {
-  const barWidth = (2 * PI * INTERNAL_CIRCLE_RADIUS) / DATA_POINTS_COUNT;
+  const barWidth = (2 * PI * INTERNAL_CIRCLE_RADIUS) / DATA_POINTS_COUNT - GAP;
 
-  noFill();
-  circle(X_CENTER, Y_CENTER, INTERNAL_CIRCLE_RADIUS * 2);
+  fill(ROBIN_GRAY);
+  circle(CENTER.x, CENTER.y, INTERNAL_CIRCLE_RADIUS * 2);
 
   beginShape();
 
-  colorMode(HSB);
+  colorMode(HSL);
 
   angleMode(DEGREES);
 
@@ -52,20 +48,19 @@ function renderChart(birdData) {
     // This moves us to the center of the canvas
     translate(width / 2, height / 2);
 
-    // rotate by however far we are
+    // rotate by however far we are along the circle
     const degreesToRotate = (360 / DATA_POINTS_COUNT) * index;
     rotate(degreesToRotate);
 
-    const radius = map(rawAbundanceValue, 0, 1, INTERNAL_CIRCLE_RADIUS, 200);
-    console.debug(radius);
+    const radius = map(rawAbundanceValue, 0, 1, INTERNAL_CIRCLE_RADIUS, MAX_EXTERNAL_CIRCLE_RADIUS);
 
     const distantRadius = INTERNAL_CIRCLE_RADIUS + radius;
     const distantCircumference = 2 * PI * distantRadius;
-    const distantBarWidth = distantCircumference / DATA_POINTS_COUNT;
+    const distantBarWidth = distantCircumference / DATA_POINTS_COUNT - GAP;
     const diff = (distantBarWidth - barWidth) / 2;
 
     const initialPoint = {
-      x: 0,
+      x: 0 - barWidth / 2,
       y: 0 + -1 * INTERNAL_CIRCLE_RADIUS,
     };
 
@@ -85,8 +80,7 @@ function renderChart(birdData) {
       y: initialPoint.y,
     };
 
-    const hue = map(index, 0, 48, 0, 360);
-    fill(hue, 100, 85);
+    fill(27, map(rawAbundanceValue, 0, 1, 0, 100), map(rawAbundanceValue, 0, 1, 0, 50));
 
     quad(
       initialPoint.x,
@@ -101,6 +95,10 @@ function renderChart(birdData) {
       bottomRightPoint.x,
       bottomRightPoint.y
     );
+
+    // if (index % 4 === 0) {
+    //   text("honk", 0, INTERNAL_CIRCLE_RADIUS + MAX_EXTERNAL_CIRCLE_RADIUS + 20)
+    // }
 
     pop();
   }

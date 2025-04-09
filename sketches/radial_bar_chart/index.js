@@ -157,28 +157,25 @@ function translateToCircleCenter() {
 function writeRobinMetadata() {
   const leftOffset = 16;
   const topOffsetInitial = 600;
-  const verticalGap = 20;
 
-  text(LEFT, CENTER);
+  const textDiv = createDiv(`
+    <div style='display: flex; flex-direction: column; width: auto; gap: 1rem; font-size: 20px;'>
+      <p style='font-size: 24px; font-weight: medium; padding: 0; margin: 0;'>
+        American Robin
+      </p>
+      <p style='font-style: italic; padding: 0; margin: 0;'>
+        (Turdus migratorius)
+      </p>
+      <div style='display: flex; flex-direction: column; gap: 1px;'>
+        <p style='padding: 0; margin: 0;'>Nine Springs Natural Area</p>
+        <p style='padding: 0; margin: 0;'>Dane County</p>
+        <p style='padding: 0; margin: 0;'>Wisconsin</p>
+      </div>
+      <p style='padding: 0; margin: 0;'>
+        1900–2025
+      </p>
+    </div>
+  `);
 
-  textSize(24);
-  textStyle(BOLD);
-  text('American Robin', leftOffset, topOffsetInitial);
-
-  textSize(20);
-  textStyle(ITALIC);
-  text('(Turdus migratorius)', leftOffset, topOffsetInitial + verticalGap + 2);
-
-  // Template string here for Glitch compatibility
-  textStyle(NORMAL);
-  textLeading(20);
-  text(
-    `Nine Springs Natural Area
-Dane County
-Wisconsin`,
-    leftOffset,
-    topOffsetInitial + 32 + verticalGap
-  );
-
-  text('1900–2025', leftOffset, topOffsetInitial + 108 + verticalGap);
+  textDiv.position(leftOffset, topOffsetInitial);
 }

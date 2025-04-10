@@ -2,18 +2,22 @@ const ROBIN_BLACK = 'black';
 const ROBIN_GRAY = '#665864';
 const ROBIN_RED = '#dc8758';
 
+const TEXT_DIV_ID = 'metadata_div';
+
 const FILENAME = '../../data/ninesprings.tsv';
 const ROBIN_INDEX = 246;
 const DATA_POINTS_COUNT = 48;
 
-const CANVAS_SIZE = { width: 600 * 2, height: 400 * 2 };
-const CENTER = { x: CANVAS_SIZE / 2, y: CANVAS_SIZE / 2 };
-const INTERNAL_CIRCLE_RADIUS = 70;
-const MAX_EXTERNAL_CIRCLE_RADIUS =
+let CANVAS_SIZE = { width: -1, height: -1 };
+let CENTER = { x: CANVAS_SIZE / 2, y: CANVAS_SIZE / 2 };
+
+let INTERNAL_CIRCLE_RADIUS = -1;
+let MAX_EXTERNAL_CIRCLE_RADIUS =
   CANVAS_SIZE.height / 1.5 - INTERNAL_CIRCLE_RADIUS;
+
 const GAP = 4;
 // using `Math.PI` instead of PI because p5 constants don't exist before `setup`
-const BAR_WIDTH =
+let BAR_WIDTH =
   (2 * Math.PI * INTERNAL_CIRCLE_RADIUS) / DATA_POINTS_COUNT - GAP;
 
 const BIRD_NAME = 'American Robin';
@@ -27,6 +31,17 @@ function preload() {
 }
 
 function setup() {
+  const postcardAspectRatio = 5 / 3.5;
+  CANVAS_SIZE = {
+    width: windowWidth,
+    height: windowWidth / postcardAspectRatio,
+  };
+  CENTER = { x: CANVAS_SIZE / 2, y: CANVAS_SIZE / 2 };
+  INTERNAL_CIRCLE_RADIUS = 70;
+  MAX_EXTERNAL_CIRCLE_RADIUS =
+    CANVAS_SIZE.height / 1.5 - INTERNAL_CIRCLE_RADIUS;
+  BAR_WIDTH = (2 * Math.PI * INTERNAL_CIRCLE_RADIUS) / DATA_POINTS_COUNT - GAP;
+
   createCanvas(CANVAS_SIZE.width, CANVAS_SIZE.height);
   loadTable(FILENAME, onDataLoad);
 }
@@ -155,23 +170,25 @@ function translateToCircleCenter() {
 }
 
 function writeRobinMetadata() {
-  const leftOffset = 16;
-  const topOffsetInitial = 600;
+  const topOffsetInitial = 0.725 * height;
+  const leftOffset = .04 * width;
 
   const textDiv = createDiv(`
-    <div style='display: flex; flex-direction: column; width: auto; gap: 1rem; font-size: 20px;'>
-      <p style='font-size: 24px; font-weight: medium; padding: 0; margin: 0;'>
-        American Robin
-      </p>
-      <p style='font-style: italic; padding: 0; margin: 0;'>
-        (Turdus migratorius)
-      </p>
-      <div style='display: flex; flex-direction: column; gap: 1px;'>
-        <p style='padding: 0; margin: 0;'>Nine Springs Natural Area</p>
-        <p style='padding: 0; margin: 0;'>Dane County</p>
-        <p style='padding: 0; margin: 0;'>Wisconsin</p>
+    <div id="metadata_div">
+      <div class="name-wrapper">
+        <p class="bird-name-common"'>
+          American Robin
+        </p>
+        <p class="bird-name-scientific">
+          (Turdus migratorius)
+        </p>
       </div>
-      <p style='padding: 0; margin: 0;'>
+      <div class="location-wrapper">
+        <p>Nine Springs Natural Area</p>
+        <p>Dane County</p>
+        <p>Wisconsin</p>
+      </div>
+      <p class="year-span">
         1900–2025
       </p>
     </div>
